@@ -1,0 +1,2197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dynasty Command — Sleeper Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0d12;
+    --bg-elev: #11161e;
+    --bg-card: #151b25;
+    --bg-card-hover: #1a2230;
+    --line: #1f2733;
+    --line-strong: #2a3445;
+    --ink: #e8ecf1;
+    --ink-dim: #8b95a7;
+    --ink-faint: #5a6478;
+    --accent: #d4ff3a;          /* electric lime — primary */
+    --accent-2: #ff6b3d;        /* signal orange */
+    --accent-3: #4a9eff;        /* cobalt */
+    --good: #5dd4a0;
+    --warn: #ffb84a;
+    --bad: #ff5c7a;
+    --gold: #f4c430;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    --shadow-deep: 0 12px 48px rgba(0,0,0,0.6);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter Tight', sans-serif;
+    font-feature-settings: 'ss01', 'cv11';
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  body {
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(212,255,58,0.04), transparent 60%),
+      radial-gradient(900px 500px at -10% 30%, rgba(74,158,255,0.03), transparent 60%),
+      var(--bg);
+  }
+
+  /* ─── Top bar ─── */
+  header.topbar {
+    border-bottom: 1px solid var(--line);
+    background: rgba(10,13,18,0.8);
+    backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .topbar-inner {
+    max-width: 1600px; margin: 0 auto;
+    padding: 18px 28px;
+    display: flex; align-items: center; gap: 24px;
+  }
+  .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .brand .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .brand em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink-dim);
+    font-size: 14px;
+    margin-left: 4px;
+  }
+  .topbar-meta {
+    margin-left: auto;
+    display: flex; gap: 18px; align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .topbar-meta .pill {
+    padding: 6px 10px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--bg-elev);
+  }
+  .topbar-meta .pill strong { color: var(--ink); font-weight: 600; }
+  .refresh-btn {
+    background: var(--accent);
+    color: #0a0d12;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .refresh-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(212,255,58,0.3); }
+  .refresh-btn:disabled { background: var(--line-strong); color: var(--ink-faint); cursor: wait; }
+
+  .settings-btn {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-dim);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .settings-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ─── Setup screen ─── */
+  .setup-screen {
+    min-height: calc(100vh - 80px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px;
+  }
+  .setup-card {
+    max-width: 540px;
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: var(--shadow-deep);
+  }
+  .setup-card h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 38px;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+  }
+  .setup-card h1 em { font-style: italic; color: var(--accent); }
+  .setup-card p.lead {
+    color: var(--ink-dim);
+    line-height: 1.55;
+    margin-bottom: 28px;
+    font-size: 15px;
+  }
+  .field { margin-bottom: 18px; }
+  .field label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+  }
+  .field input, .field select {
+    width: 100%;
+    background: var(--bg-elev);
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    transition: border-color 0.15s;
+  }
+  .field input:focus, .field select:focus {
+    outline: none; border-color: var(--accent);
+  }
+  .primary-btn {
+    background: var(--accent);
+    color: #0a0d12;
+    border: none;
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: transform 0.15s;
+  }
+  .primary-btn:hover { transform: translateY(-1px); }
+  .primary-btn:disabled { background: var(--line-strong); color: var(--ink-faint); cursor: wait; }
+  .setup-hint {
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  .setup-hint code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg-elev);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent);
+    font-size: 11px;
+  }
+
+  /* ─── Main layout ─── */
+  main {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 32px 28px 80px;
+  }
+
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 32px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab {
+    background: transparent;
+    border: none;
+    color: var(--ink-dim);
+    padding: 14px 18px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .view { display: none; }
+  .view.active { display: block; animation: fadeIn 0.35s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* ─── Section heading ─── */
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .section-title em { font-style: italic; color: var(--ink-dim); font-weight: 400; }
+  .section-sub {
+    color: var(--ink-dim);
+    font-size: 14px;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  /* ─── Cards ─── */
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .grid-4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .card:hover { border-color: var(--line-strong); }
+  .card.mine {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, rgba(212,255,58,0.05), var(--bg-card) 50%);
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .stat-card .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-dim);
+    margin-bottom: 10px;
+  }
+  .stat-card .value {
+    font-family: 'Fraunces', serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .stat-card .sub {
+    color: var(--ink-dim);
+    font-size: 12px;
+    margin-top: 6px;
+  }
+
+  /* ─── Power rankings ─── */
+  .rank-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 80px 120px 120px 120px;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .rank-row:hover { transform: translateX(2px); border-color: var(--line-strong); }
+  .rank-row.mine {
+    border-color: var(--accent);
+    background: linear-gradient(90deg, rgba(212,255,58,0.06), var(--bg-card) 30%);
+  }
+  .rank-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 28px;
+    color: var(--ink-faint);
+    text-align: center;
+    line-height: 1;
+  }
+  .rank-row.mine .rank-num { color: var(--accent); }
+  .rank-row .rank-num.gold { color: var(--gold); }
+  .team-name { font-weight: 600; font-size: 15px; }
+  .team-owner { color: var(--ink-dim); font-size: 12px; margin-top: 2px; }
+  .rank-cell {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  .rank-cell .label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .rank-cell .value { color: var(--ink); }
+
+  .window-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .window-contend { background: rgba(244,196,48,0.15); color: var(--gold); border: 1px solid rgba(244,196,48,0.3); }
+  .window-rising { background: rgba(93,212,160,0.15); color: var(--good); border: 1px solid rgba(93,212,160,0.3); }
+  .window-rebuild { background: rgba(255,107,61,0.15); color: var(--accent-2); border: 1px solid rgba(255,107,61,0.3); }
+  .window-stuck { background: rgba(139,149,167,0.15); color: var(--ink-dim); border: 1px solid var(--line-strong); }
+
+  /* ─── Position breakdown ─── */
+  .pos-bar-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 80px;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  .pos-bar-bg {
+    height: 8px;
+    background: var(--bg-elev);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .pos-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s ease;
+  }
+  .pos-bar-row .label-cell { color: var(--ink-dim); font-weight: 600; }
+  .pos-bar-row .num-cell { text-align: right; color: var(--ink); }
+
+  /* ─── Trade finder ─── */
+  .trade-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 14px;
+  }
+  .trade-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, rgba(212,255,58,0.04), var(--bg-card) 60%);
+  }
+  .trade-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .trade-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .trade-score strong { color: var(--accent); font-size: 14px; }
+  .trade-sides {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: center;
+  }
+  .trade-side h4 {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .trade-side .gives {
+    font-size: 10px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .trade-arrow {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 24px;
+    color: var(--accent);
+  }
+  .trade-pkg {
+    background: var(--bg-elev);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    border: 1px solid var(--line);
+  }
+  .trade-rationale {
+    font-size: 13px;
+    color: var(--ink-dim);
+    line-height: 1.55;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+
+  /* ─── Roster table ─── */
+  .roster-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+    gap: 16px;
+  }
+  .roster-card .roster-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 14px;
+  }
+  .roster-card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .roster-card .roster-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+  }
+  .player-row {
+    display: grid;
+    grid-template-columns: 36px 1fr 50px 70px 60px;
+    gap: 8px;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+  }
+  .player-row:last-child { border-bottom: none; }
+  .pos-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 6px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  .pos-QB { background: rgba(255,107,61,0.15); color: var(--accent-2); }
+  .pos-RB { background: rgba(93,212,160,0.15); color: var(--good); }
+  .pos-WR { background: rgba(74,158,255,0.15); color: var(--accent-3); }
+  .pos-TE { background: rgba(244,196,48,0.15); color: var(--gold); }
+  .pos-PICK { background: rgba(212,255,58,0.15); color: var(--accent); }
+  .pos-DEF, .pos-K { background: rgba(139,149,167,0.15); color: var(--ink-dim); }
+  .player-name { font-weight: 500; }
+  .player-team { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-faint); }
+  .player-age { font-family: 'JetBrains Mono', monospace; color: var(--ink-dim); text-align: right; font-size: 12px; }
+  .player-val { font-family: 'JetBrains Mono', monospace; text-align: right; color: var(--ink); font-weight: 600; }
+
+  /* ─── Loading ─── */
+  .loader {
+    display: flex; align-items: center; justify-content: center;
+    padding: 80px 20px;
+    flex-direction: column; gap: 16px;
+  }
+  .loader-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .loader-bar {
+    width: 200px; height: 2px;
+    background: var(--line);
+    overflow: hidden;
+    position: relative;
+  }
+  .loader-bar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    animation: load 1.4s infinite;
+  }
+  @keyframes load {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+  }
+
+  .error-box {
+    background: rgba(255,92,122,0.08);
+    border: 1px solid rgba(255,92,122,0.3);
+    color: var(--bad);
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+  .error-box strong { color: #fff; }
+
+  /* ─── Filters ─── */
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .filter-chip {
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
+    color: var(--ink-dim);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-chip:hover { color: var(--ink); border-color: var(--ink-faint); }
+  .filter-chip.active {
+    background: var(--accent);
+    color: #0a0d12;
+    border-color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ─── Mini chart for age curve ─── */
+  .age-chart {
+    height: 60px;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 12px;
+  }
+  .age-bar {
+    flex: 1;
+    background: var(--accent);
+    opacity: 0.6;
+    min-height: 2px;
+    border-radius: 2px 2px 0 0;
+    transition: opacity 0.15s;
+  }
+  .age-bar:hover { opacity: 1; }
+  .age-bar.young { background: var(--good); }
+  .age-bar.prime { background: var(--accent); }
+  .age-bar.aging { background: var(--warn); }
+  .age-bar.old { background: var(--accent-2); }
+
+  /* ─── Modal ─── */
+  .modal-bg {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 200;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-bg.active { display: flex; }
+  .modal {
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
+    border-radius: 14px;
+    padding: 32px;
+    max-width: 540px; width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .close-btn {
+    background: var(--line);
+    color: var(--ink-dim);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+
+  /* ─── Footer ─── */
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-top: 1px solid var(--line);
+    margin-top: 60px;
+  }
+
+  /* ─── Strength meter ─── */
+  .strength-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .strength-cell {
+    text-align: center;
+    padding: 8px 4px;
+    background: var(--bg-elev);
+    border-radius: 6px;
+    border: 1px solid var(--line);
+  }
+  .strength-cell .pos { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-dim); }
+  .strength-cell .grade {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1;
+    margin-top: 4px;
+  }
+  .grade-Aplus, .grade-A { color: var(--good); }
+  .grade-Aminus, .grade-Bplus { color: #a8e6c4; }
+  .grade-B, .grade-Bminus { color: var(--gold); }
+  .grade-Cplus, .grade-C { color: var(--warn); }
+  .grade-Cminus, .grade-D, .grade-Dplus { color: var(--accent-2); }
+  .grade-F { color: var(--bad); }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-dim);
+  }
+  .empty-state h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .topbar-inner { padding: 14px 16px; flex-wrap: wrap; }
+    main { padding: 24px 16px 60px; }
+    .rank-row { grid-template-columns: 40px 1fr 80px; }
+    .rank-row .rank-cell:nth-child(n+4) { display: none; }
+    .trade-sides { grid-template-columns: 1fr; }
+    .trade-arrow { transform: rotate(90deg); justify-self: center; }
+    .section-title { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="dot"></span>
+      Dynasty Command <em>/ sleeper edition</em>
+    </div>
+    <div class="topbar-meta" id="topbar-meta" style="display:none;">
+      <span class="pill"><strong id="lg-name">—</strong></span>
+      <span class="pill" id="lg-format">—</span>
+      <span class="pill">Updated <strong id="lg-updated">—</strong></span>
+      <button class="settings-btn" onclick="openValueInfo()" title="What do these values mean?">? Values</button>
+      <button class="settings-btn" onclick="openSettings()">⚙ Settings</button>
+      <button class="refresh-btn" id="refresh-btn" onclick="hardRefresh()">↻ Refresh</button>
+    </div>
+  </div>
+</header>
+
+<!-- Setup screen -->
+<div id="setup-screen" class="setup-screen">
+  <div class="setup-card">
+    <h1>Welcome to your <em>dynasty war room</em>.</h1>
+    <p class="lead">Pulls everything from Sleeper, blends value sources from FantasyCalc and KeepTradeCut, and gives you the league-wide x-ray you need each week.</p>
+    <div class="field">
+      <label>Sleeper League ID</label>
+      <input type="text" id="setup-league-id" placeholder="e.g. 1312142544024387584" autocomplete="off" />
+      <div class="setup-hint">Find it in your Sleeper league URL: <code>sleeper.com/leagues/[ID]/...</code></div>
+    </div>
+    <div class="field">
+      <label>Your Sleeper Username (optional — to highlight your team)</label>
+      <input type="text" id="setup-username" placeholder="e.g. colinjones" autocomplete="off" />
+    </div>
+    <div class="field">
+      <label>Value Source Preference</label>
+      <select id="setup-source">
+        <option value="blend">Blend (FantasyCalc + KTC averaged)</option>
+        <option value="fc">FantasyCalc only</option>
+        <option value="ktc">KeepTradeCut only</option>
+      </select>
+      <div class="setup-hint">Blend tends to be most stable. Both sources auto-detect Superflex + TEP.</div>
+    </div>
+    <button class="primary-btn" id="setup-go" onclick="initialLoad()">Pull League →</button>
+  </div>
+</div>
+
+<!-- Main app -->
+<main id="main-app" style="display:none;">
+  <div class="tab-bar">
+    <button class="tab active" data-view="overview">Overview</button>
+    <button class="tab" data-view="rankings">Power Rankings</button>
+    <button class="tab" data-view="windows">Contention Windows</button>
+    <button class="tab" data-view="strengths">Position Strength</button>
+    <button class="tab" data-view="age">Age Curves</button>
+    <button class="tab" data-view="trades">Trade Finder</button>
+    <button class="tab" data-view="rosters">All Rosters</button>
+    <button class="tab" data-view="players">Player Database</button>
+  </div>
+
+  <div id="content"></div>
+</main>
+
+<!-- Settings modal -->
+<div class="modal-bg" id="settings-modal">
+  <div class="modal">
+    <h2>Settings</h2>
+    <div class="field">
+      <label>Sleeper League ID</label>
+      <input type="text" id="settings-league-id" />
+    </div>
+    <div class="field">
+      <label>Your Sleeper Username</label>
+      <input type="text" id="settings-username" />
+    </div>
+    <div class="field">
+      <label>Value Source</label>
+      <select id="settings-source">
+        <option value="blend">Blend (FantasyCalc + KTC)</option>
+        <option value="fc">FantasyCalc only</option>
+        <option value="ktc">KeepTradeCut only</option>
+      </select>
+    </div>
+    <div style="display:flex; gap:10px; margin-top:20px;">
+      <button class="primary-btn" style="flex:1; margin:0;" onclick="saveSettings()">Save & Refresh</button>
+      <button class="close-btn" onclick="closeSettings()">Cancel</button>
+    </div>
+    <p class="setup-hint" style="margin-top:20px;">Want to start over? <a href="#" onclick="resetAll(); return false;" style="color:var(--accent-2);">Clear all data</a>.</p>
+  </div>
+</div>
+
+<!-- Value explainer modal -->
+<div class="modal-bg" id="value-modal">
+  <div class="modal" style="max-width: 680px;">
+    <h2>Reading the <em style="font-style:italic;color:var(--accent);">values</em></h2>
+
+    <p style="color: var(--ink-dim); line-height: 1.6; margin-bottom: 20px; font-size: 14px;">
+      The numbers on every player and pick are <strong style="color:var(--ink);">dynasty trade values</strong> — community-derived market prices, not point projections. They tell you what a player is worth in a trade, calibrated for your league's exact format (Superflex + TEP + half PPR + 12 teams).
+    </p>
+
+    <h3 style="font-family: 'Fraunces', serif; font-size: 17px; margin-bottom: 10px; margin-top: 18px;">The scale</h3>
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--bg-elev); padding: 14px 16px; border-radius: 8px; line-height: 1.9; border: 1px solid var(--line);">
+      <div><strong style="color: var(--good);">9,000+</strong> · <span style="color: var(--ink-dim);">Elite, league-winning anchor</span></div>
+      <div><strong style="color: var(--accent);">6,000–8,500</strong> · <span style="color: var(--ink-dim);">High-end starter, build-around</span></div>
+      <div><strong style="color: var(--gold);">3,500–6,000</strong> · <span style="color: var(--ink-dim);">Solid starter, weekly contributor</span></div>
+      <div><strong style="color: var(--warn);">1,500–3,500</strong> · <span style="color: var(--ink-dim);">Flex / depth piece</span></div>
+      <div><strong style="color: var(--accent-2);">500–1,500</strong> · <span style="color: var(--ink-dim);">Bench, late-round dart</span></div>
+      <div><strong style="color: var(--ink-faint);">Under 500</strong> · <span style="color: var(--ink-dim);">Deep stash / taxi</span></div>
+    </div>
+
+    <h3 style="font-family: 'Fraunces', serif; font-size: 17px; margin-bottom: 10px; margin-top: 22px;">Where they come from</h3>
+    <p style="color: var(--ink-dim); line-height: 1.6; font-size: 13px; margin-bottom: 14px;">
+      <strong style="color: var(--ink);">FantasyCalc</strong> derives values from thousands of real trades happening in active dynasty leagues, then back-solves the implied prices. <strong style="color: var(--ink);">KeepTradeCut</strong> uses millions of "would you trade A for B?" comparisons. Your "blend" setting averages both for stability.
+    </p>
+    <p style="color: var(--ink-dim); line-height: 1.6; font-size: 13px;">
+      The numbers are <em>dimensionless</em> — what matters is the ratio. A 6,000 player is worth roughly 2× a 3,000 player.
+    </p>
+
+    <h3 style="font-family: 'Fraunces', serif; font-size: 17px; margin-bottom: 10px; margin-top: 22px;">Trade fairness</h3>
+    <p style="color: var(--ink-dim); line-height: 1.6; font-size: 13px;">
+      A clean swap is <strong style="color: var(--ink);">~90%+ symmetry</strong> between sides. The Trade Finder surfaces deals down to 78% to give you ideas, but real negotiations should target tighter. The <strong style="color: var(--ink);">Δ30d trend</strong> column is the value change over 30 days — often a stronger signal than the absolute value (a player at 4,000 with -800 trend is melting; one at 3,500 with +600 is heating up).
+    </p>
+
+    <h3 style="font-family: 'Fraunces', serif; font-size: 17px; margin-bottom: 10px; margin-top: 22px;">Pick values</h3>
+    <p style="color: var(--ink-dim); line-height: 1.6; font-size: 13px;">
+      Rookie picks use a heuristic table since the Sleeper API doesn't expose pick values directly. Current-year 1sts run roughly 5,000–7,800 (early > late). Future picks discount about 22% per year out. Once a rookie draft completes, those picks disappear from the dashboard.
+    </p>
+
+    <h3 style="font-family: 'Fraunces', serif; font-size: 17px; margin-bottom: 10px; margin-top: 22px;">Caveats</h3>
+    <ul style="color: var(--ink-dim); line-height: 1.6; font-size: 13px; padding-left: 20px;">
+      <li style="margin-bottom: 6px;">Values shift weekly — refresh before any real trade talk.</li>
+      <li style="margin-bottom: 6px;">Community values lag reality on breakouts and overreact to slow starts.</li>
+      <li style="margin-bottom: 6px;">They don't know your league mates' irrational attachments. The market average ≠ your league's market.</li>
+      <li>Treat as a strong starting point, not gospel.</li>
+    </ul>
+
+    <button class="close-btn" style="margin-top: 24px; width: 100%; padding: 12px;" onclick="closeValueInfo()">Got it</button>
+  </div>
+</div>
+
+<footer>
+  Dynasty Command · Built for Sleeper · Sources: FantasyCalc · KeepTradeCut · Sleeper API · Local-first, no tracking
+</footer>
+
+<script>
+/* ═════════════════════════════════════════════════════════
+   STATE & STORAGE
+   ═════════════════════════════════════════════════════════ */
+const STORAGE_KEY = 'dynastyCmd_v1';
+const STATE = {
+  leagueId: null,
+  username: null,
+  source: 'blend',
+  league: null,
+  rosters: null,
+  users: null,
+  tradedPicks: null,
+  drafts: null,
+  completedDraftSeasons: null,
+  draftPicks: null,
+  players: null,        // sleeper player DB
+  values: null,         // merged values keyed by sleeper player_id and pick id
+  myRosterId: null,
+  format: { sf: false, tep: 0, ppr: 0.5, teams: 12, rounds: 4 },
+  lastUpdated: null,
+  view: 'overview',
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { return null; }
+}
+function saveState() {
+  const persist = {
+    leagueId: STATE.leagueId,
+    username: STATE.username,
+    source: STATE.source,
+    lastUpdated: STATE.lastUpdated,
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(persist));
+}
+
+/* ═════════════════════════════════════════════════════════
+   DATA FETCHING
+   ═════════════════════════════════════════════════════════ */
+
+async function fetchJSON(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`Fetch failed: ${url} (${r.status})`);
+  return r.json();
+}
+
+async function fetchSleeperLeague(id) {
+  const [league, rosters, users, tradedPicks, drafts] = await Promise.all([
+    fetchJSON(`https://api.sleeper.app/v1/league/${id}`),
+    fetchJSON(`https://api.sleeper.app/v1/league/${id}/rosters`),
+    fetchJSON(`https://api.sleeper.app/v1/league/${id}/users`),
+    fetchJSON(`https://api.sleeper.app/v1/league/${id}/traded_picks`),
+    fetchJSON(`https://api.sleeper.app/v1/league/${id}/drafts`),
+  ]);
+  return { league, rosters, users, tradedPicks, drafts };
+}
+
+/* Determine which rookie draft seasons have already been completed (picks used).
+   Sleeper draft status values: 'pre_draft', 'drafting', 'paused', 'complete'. */
+function completedDraftSeasons(drafts) {
+  const completed = new Set();
+  if (!drafts || !Array.isArray(drafts)) return completed;
+  drafts.forEach(d => {
+    // We only care about rookie/dynasty startup drafts. Sleeper marks rookie drafts
+    // with type 'auction', 'snake', or 'linear' and metadata.scoring_type / season.
+    // Easiest reliable signal: status === 'complete' + season is set.
+    if (d.status === 'complete' && d.season) {
+      completed.add(parseInt(d.season));
+    }
+  });
+  return completed;
+}
+
+let _playerDBPromise = null;
+async function fetchPlayerDB() {
+  if (_playerDBPromise) return _playerDBPromise;
+  // Cache player DB in localStorage for 24h to avoid re-downloading 5MB
+  const cacheKey = 'dynastyCmd_playerDB_v1';
+  const cached = localStorage.getItem(cacheKey);
+  if (cached) {
+    try {
+      const { ts, data } = JSON.parse(cached);
+      if (Date.now() - ts < 86400000) return data;
+    } catch (e) {}
+  }
+  _playerDBPromise = fetchJSON('https://api.sleeper.app/v1/players/nfl').then(data => {
+    try { localStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), data })); } catch (e) {}
+    return data;
+  });
+  return _playerDBPromise;
+}
+
+/* FantasyCalc API — public, CORS-enabled */
+async function fetchFantasyCalcValues({ sf, tep, ppr, teams }) {
+  // FantasyCalc params: numQbs (1 or 2), numTeams, ppr, includeAdp
+  const numQbs = sf ? 2 : 1;
+  const url = `https://api.fantasycalc.com/values/current?isDynasty=true&numQbs=${numQbs}&numTeams=${teams}&ppr=${ppr}`;
+  try {
+    const data = await fetchJSON(url);
+    return data; // array of { player: { sleeperId, name, position, ... }, value, redraftValue, overallRank, positionRank, trend30Day, ... }
+  } catch (e) {
+    console.warn('FantasyCalc fetch failed', e);
+    return null;
+  }
+}
+
+/* KeepTradeCut — they have a public undocumented endpoint that returns CSV-style HTML;
+   we use their public values JSON via their public dynasty rankings page format.
+   Fallback: if KTC fails, we just use FantasyCalc. */
+async function fetchKTCValues({ sf, tep }) {
+  // KTC publishes a JSON feed at this URL pattern
+  const format = sf ? 2 : 1;
+  const tepArg = tep > 0 ? `&teppr=${tep}` : '';
+  const url = `https://keeptradecut.com/dynasty-rankings/rankings-feed?filters=QB|WR|RB|TE|RDP&format=${format}${tepArg}`;
+  try {
+    // KTC may not allow CORS — try anyway
+    const data = await fetchJSON(url);
+    return data;
+  } catch (e) {
+    console.warn('KTC fetch failed (CORS likely blocked) — falling back to FantasyCalc only', e);
+    return null;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════
+   FORMAT DETECTION
+   ═════════════════════════════════════════════════════════ */
+
+function detectFormat(league) {
+  const positions = league.roster_positions || [];
+  const sf = positions.includes('SUPER_FLEX') || positions.filter(p => p === 'QB').length >= 2;
+  const scoring = league.scoring_settings || {};
+  // TEP: extra points per reception for TEs
+  const teRec = scoring.bonus_rec_te || 0;
+  const tep = teRec; // 0.5 = full TEP, 0.25 = half TEP
+  const ppr = scoring.rec || 0;
+  const teams = league.total_rosters || 12;
+  // rookie draft rounds
+  const rounds = (league.settings && league.settings.draft_rounds) || 4;
+  return { sf, tep, ppr, teams, rounds };
+}
+
+/* ═════════════════════════════════════════════════════════
+   VALUE BLENDING
+   ═════════════════════════════════════════════════════════ */
+
+function buildValueMap(fcData, ktcData, source) {
+  const map = new Map(); // sleeperId -> { val, fcVal, ktcVal, posRank, overallRank, trend, name, position, age, team }
+
+  // FantasyCalc indexed by sleeperId
+  if (fcData) {
+    fcData.forEach(item => {
+      const sid = item.player && item.player.sleeperId;
+      if (!sid) return;
+      map.set(sid, {
+        sleeperId: sid,
+        name: item.player.name,
+        position: item.player.position,
+        team: item.player.maybeTeam || item.player.team,
+        age: item.player.maybeAge || item.player.age,
+        fcVal: item.value || 0,
+        ktcVal: null,
+        posRank: item.positionRank,
+        overallRank: item.overallRank,
+        trend: item.trend30Day || 0,
+        redraftVal: item.redraftValue || null,
+      });
+    });
+  }
+
+  // KTC merge — KTC uses their own player IDs, match by name+position
+  if (ktcData && Array.isArray(ktcData)) {
+    const nameKey = (n, p) => `${(n||'').toLowerCase().replace(/[^a-z]/g,'')}_${p}`;
+    const fcByKey = new Map();
+    map.forEach((v, k) => fcByKey.set(nameKey(v.name, v.position), k));
+    ktcData.forEach(item => {
+      const k = nameKey(item.playerName, item.position);
+      const sid = fcByKey.get(k);
+      if (sid && map.has(sid)) {
+        map.get(sid).ktcVal = item.superflexValues ? item.superflexValues.value : (item.oneQBValues ? item.oneQBValues.value : null);
+      }
+    });
+  }
+
+  // Compute final value based on source preference
+  map.forEach((v) => {
+    const fc = v.fcVal || 0;
+    const ktc = v.ktcVal || 0;
+    if (source === 'fc') v.val = fc;
+    else if (source === 'ktc') v.val = ktc || fc;
+    else { // blend
+      if (fc && ktc) v.val = Math.round((fc + ktc) / 2);
+      else v.val = fc || ktc;
+    }
+  });
+
+  return map;
+}
+
+/* Rookie pick valuations — heuristic table when source data lacks them.
+   Pick value scales by round and projected position (early/mid/late).
+   For future picks we discount by years out. */
+function pickValue(season, round, slot, source, sf, currentSeason) {
+  // Base values for current-year rookie picks (Superflex baseline; scaled)
+  // These are approximate market values blending FC + KTC norms (mid 2025/early 2026)
+  const baseSF = {
+    1: { early: 7800, mid: 6200, late: 5000 },
+    2: { early: 4200, mid: 3300, late: 2500 },
+    3: { early: 2000, mid: 1500, late: 1100 },
+    4: { early: 900,  mid: 700,  late: 500 },
+  };
+  const base1QB = {
+    1: { early: 6800, mid: 5400, late: 4200 },
+    2: { early: 3300, mid: 2400, late: 1700 },
+    3: { early: 1300, mid: 900,  late: 600 },
+    4: { early: 500,  mid: 350,  late: 250 },
+  };
+  const tbl = sf ? baseSF : base1QB;
+  const r = tbl[round] || tbl[4];
+  let val = slot === 'early' ? r.early : slot === 'late' ? r.late : r.mid;
+  // Discount future years
+  const yearsOut = season - currentSeason;
+  if (yearsOut === 1) val = Math.round(val * 0.78);
+  else if (yearsOut === 2) val = Math.round(val * 0.6);
+  else if (yearsOut >= 3) val = Math.round(val * 0.45);
+  return val;
+}
+
+/* ═════════════════════════════════════════════════════════
+   ROSTER ASSEMBLY
+   ═════════════════════════════════════════════════════════ */
+
+function getCurrentSeason() {
+  const d = new Date();
+  // NFL "season" rolls in March; rookie picks year boundary
+  return d.getMonth() < 2 ? d.getFullYear() - 1 : d.getFullYear();
+}
+
+function assembleTeams() {
+  const usersByID = new Map(STATE.users.map(u => [u.user_id, u]));
+  const currentSeason = parseInt(STATE.league.season) || getCurrentSeason();
+
+  // Find my roster
+  let myRosterId = null;
+  if (STATE.username) {
+    const me = STATE.users.find(u =>
+      (u.username && u.username.toLowerCase() === STATE.username.toLowerCase()) ||
+      (u.display_name && u.display_name.toLowerCase() === STATE.username.toLowerCase())
+    );
+    if (me) {
+      const myRoster = STATE.rosters.find(r => r.owner_id === me.user_id);
+      if (myRoster) myRosterId = myRoster.roster_id;
+    }
+  }
+  STATE.myRosterId = myRosterId;
+
+  // Determine seasons of picks the league owns
+  // Sleeper convention: each roster initially owns picks for current+future seasons in each round
+  // Traded picks endpoint tells us which have moved.
+  const futureSeasons = [];
+  // Look at traded_picks to find which seasons are tracked
+  const seasonSet = new Set();
+  STATE.tradedPicks.forEach(p => seasonSet.add(parseInt(p.season)));
+  // Always include the next 2-3 rookie drafts
+  for (let s = currentSeason; s <= currentSeason + 2; s++) seasonSet.add(s);
+  // Exclude any seasons whose rookie draft has already completed —
+  // those picks have been spent and the players are now on rosters.
+  const completed = STATE.completedDraftSeasons || new Set();
+  const seasons = [...seasonSet]
+    .filter(s => s >= currentSeason)
+    .filter(s => !completed.has(s))
+    .sort();
+
+  // Determine the NEXT upcoming rookie draft (the one closest to "now" that hasn't completed).
+  // This is what dynasty markets treat as "this year's 1st" — not the calendar year.
+  let nextActiveSeason = currentSeason;
+  while (completed.has(nextActiveSeason)) nextActiveSeason++;
+
+  const teams = STATE.rosters.map(r => {
+    const user = usersByID.get(r.owner_id) || {};
+    const teamName = (user.metadata && user.metadata.team_name) || user.display_name || `Team ${r.roster_id}`;
+    const ownerName = user.display_name || user.username || 'Unknown';
+
+    // Build player list with values
+    const playerIds = (r.players || []);
+    const players = playerIds.map(pid => {
+      const sleeperPlayer = STATE.players[pid] || {};
+      const valEntry = STATE.values.get(pid);
+      const age = (valEntry && valEntry.age) || sleeperPlayer.age || null;
+      const position = (valEntry && valEntry.position) || sleeperPlayer.position || (sleeperPlayer.fantasy_positions && sleeperPlayer.fantasy_positions[0]) || '?';
+      const name = (valEntry && valEntry.name) || `${sleeperPlayer.first_name || ''} ${sleeperPlayer.last_name || ''}`.trim() || pid;
+      const team = (valEntry && valEntry.team) || sleeperPlayer.team || 'FA';
+      return {
+        id: pid,
+        name, position, team, age,
+        val: (valEntry && valEntry.val) || 0,
+        trend: (valEntry && valEntry.trend) || 0,
+        injuryStatus: sleeperPlayer.injury_status || null,
+      };
+    });
+
+    // Build pick list — picks rosters own (start with all original picks, remove traded away, add traded in)
+    const picks = [];
+    seasons.forEach(season => {
+      for (let round = 1; round <= STATE.format.rounds; round++) {
+        // Original owner of pick is roster_id (if no trade), but Sleeper marks it as roster owns
+        // We need to determine final owner from traded_picks list
+        // The traded_picks entries have: { season, round, roster_id (original), previous_owner_id, owner_id (current) }
+        // If a pick for this round/season was traded, find its current owner
+        const tradedEntry = STATE.tradedPicks.find(p =>
+          parseInt(p.season) === season &&
+          parseInt(p.round) === round &&
+          parseInt(p.roster_id) === r.roster_id
+        );
+        if (tradedEntry) {
+          // This pick (originally r.roster_id) has been traded. r doesn't own it.
+          return;
+        }
+        // Check if r received a pick from someone else for this season+round (could be multiple)
+        // Picks received: traded_picks where owner_id === r.roster_id and roster_id (original) !== r.roster_id
+        // We add those below in a separate pass
+      }
+    });
+    // Add picks received
+    const receivedPicks = STATE.tradedPicks.filter(p =>
+      parseInt(p.owner_id) === r.roster_id &&
+      parseInt(p.roster_id) !== r.roster_id
+    );
+    // Build full pick inventory
+    seasons.forEach(season => {
+      for (let round = 1; round <= STATE.format.rounds; round++) {
+        const wasTradedAway = STATE.tradedPicks.some(p =>
+          parseInt(p.season) === season &&
+          parseInt(p.round) === round &&
+          parseInt(p.roster_id) === r.roster_id
+        );
+        if (!wasTradedAway) {
+          // r still owns own pick
+          const slot = guessSlot(r.roster_id, STATE.rosters.length, season, nextActiveSeason);
+          picks.push({
+            id: `pick_${season}_${round}_${r.roster_id}`,
+            label: `${season} ${ord(round)}`,
+            from: 'own',
+            originalOwner: r.roster_id,
+            season, round,
+            position: 'PICK',
+            val: pickValue(season, round, slot, STATE.source, STATE.format.sf, nextActiveSeason),
+          });
+        }
+      }
+    });
+    receivedPicks.forEach(p => {
+      const season = parseInt(p.season);
+      const round = parseInt(p.round);
+      // Skip picks from rookie drafts that have already completed
+      if (completed.has(season) || season < currentSeason) return;
+      const origOwner = parseInt(p.roster_id);
+      const origUser = usersByID.get((STATE.rosters.find(rr => rr.roster_id === origOwner) || {}).owner_id);
+      const origTeamName = (origUser && origUser.display_name) || `Team ${origOwner}`;
+      const slot = guessSlot(origOwner, STATE.rosters.length, season, nextActiveSeason);
+      picks.push({
+        id: `pick_${season}_${round}_${origOwner}`,
+        label: `${season} ${ord(round)} (via ${origTeamName})`,
+        from: origOwner,
+        originalOwner: origOwner,
+        season, round,
+        position: 'PICK',
+        val: pickValue(season, round, slot, STATE.source, STATE.format.sf, nextActiveSeason),
+      });
+    });
+
+    // Sort players by value desc
+    players.sort((a, b) => b.val - a.val);
+    picks.sort((a, b) => (a.season - b.season) || (a.round - b.round));
+
+    return {
+      rosterId: r.roster_id,
+      ownerId: r.owner_id,
+      teamName,
+      ownerName,
+      avatar: user.avatar,
+      players,
+      picks,
+      record: {
+        wins: r.settings?.wins || 0,
+        losses: r.settings?.losses || 0,
+        ties: r.settings?.ties || 0,
+        pf: ((r.settings?.fpts || 0) + (r.settings?.fpts_decimal || 0)/100),
+        pa: ((r.settings?.fpts_against || 0) + (r.settings?.fpts_against_decimal || 0)/100),
+      },
+      isMine: r.roster_id === myRosterId,
+    };
+  });
+
+  return teams;
+}
+
+function ord(n) { return n + ['th','st','nd','rd'][((n%100)>>3^1)&&(n%10)<4 ? n%10 : 0]; }
+
+function guessSlot(rosterId, totalRosters, pickSeason, currentSeason) {
+  // For current/upcoming season, we have no knowledge of who'll finish where, so default to mid.
+  // Slight heuristic: rough team strength could be inferred but we'll just use 'mid' for fairness.
+  return 'mid';
+}
+
+/* ═════════════════════════════════════════════════════════
+   ANALYTICS
+   ═════════════════════════════════════════════════════════ */
+
+function computeTeamMetrics(teams) {
+  // total value, position-group values, age-weighted "future value", contention window
+  return teams.map(t => {
+    const playersByPos = { QB: [], RB: [], WR: [], TE: [] };
+    t.players.forEach(p => {
+      if (playersByPos[p.position]) playersByPos[p.position].push(p);
+    });
+    Object.values(playersByPos).forEach(arr => arr.sort((a,b) => b.val - a.val));
+
+    const totalPlayerVal = t.players.reduce((s, p) => s + (p.val || 0), 0);
+    const totalPickVal = t.picks.reduce((s, p) => s + (p.val || 0), 0);
+    const totalVal = totalPlayerVal + totalPickVal;
+
+    // Top-N by position (starting cores)
+    const topN = (arr, n) => arr.slice(0, n).reduce((s, p) => s + p.val, 0);
+    // Superflex top: 2 QB if SF, else 1
+    const qbN = STATE.format.sf ? 2 : 1;
+    const startersVal =
+      topN(playersByPos.QB, qbN) +
+      topN(playersByPos.RB, 2) +
+      topN(playersByPos.WR, 3) +
+      topN(playersByPos.TE, 1);
+
+    // Position group strength (raw and ranked)
+    const posVal = {
+      QB: topN(playersByPos.QB, qbN + 1),
+      RB: topN(playersByPos.RB, 4),
+      WR: topN(playersByPos.WR, 5),
+      TE: topN(playersByPos.TE, 2),
+    };
+
+    // Age structure
+    const validAges = t.players.filter(p => p.age && p.age > 0 && p.val > 200);
+    const totalRelevantVal = validAges.reduce((s,p)=>s+p.val,0) || 1;
+    const ageWeightedAvg = validAges.reduce((s,p)=>s+p.age*p.val,0) / totalRelevantVal;
+
+    // Buckets by age (for display)
+    const ageBuckets = {};
+    for (let a = 21; a <= 35; a++) ageBuckets[a] = 0;
+    validAges.forEach(p => {
+      const a = Math.min(35, Math.max(21, Math.round(p.age)));
+      ageBuckets[a] = (ageBuckets[a] || 0) + p.val;
+    });
+
+    // Young value share (under 26) — proxy for window length
+    const youngVal = validAges.filter(p => p.age < 26).reduce((s,p)=>s+p.val,0);
+    const oldVal = validAges.filter(p => p.age >= 30).reduce((s,p)=>s+p.val,0);
+    const youngShare = youngVal / totalRelevantVal;
+    const oldShare = oldVal / totalRelevantVal;
+
+    // Contention window classifier
+    // - "contend": high startersVal AND lots of value tied to age 26-30
+    // - "rising": high young share AND solid totalVal
+    // - "rebuild": low totalVal OR very high young share but low startersVal
+    // - "stuck": mid totalVal, mid age, no clear edge
+    return {
+      ...t,
+      metrics: {
+        totalVal, totalPlayerVal, totalPickVal,
+        startersVal,
+        posVal,
+        playersByPos,
+        ageWeightedAvg: ageWeightedAvg || 0,
+        youngShare, oldShare,
+        ageBuckets,
+        topPlayers: t.players.slice(0, 5),
+      }
+    };
+  });
+}
+
+function classifyWindow(team, allTeams) {
+  const m = team.metrics;
+  const startersRanks = allTeams.map(t => t.metrics.startersVal).sort((a,b)=>b-a);
+  const youngRanks = allTeams.map(t => t.metrics.youngShare).sort((a,b)=>b-a);
+  const totalRanks = allTeams.map(t => t.metrics.totalVal).sort((a,b)=>b-a);
+
+  const startersRank = startersRanks.indexOf(m.startersVal) + 1;
+  const youngRank = youngRanks.indexOf(m.youngShare) + 1;
+  const totalRank = totalRanks.indexOf(m.totalVal) + 1;
+
+  const N = allTeams.length;
+  const topThird = N / 3;
+  const bottomThird = N - topThird;
+
+  // CONTEND: top-tier starters
+  if (startersRank <= topThird && m.youngShare < 0.55) {
+    return { tag: 'contend', label: 'Contend Now', class: 'window-contend' };
+  }
+  // RISING: young + good total
+  if (youngRank <= topThird && totalRank <= N/2 && m.youngShare >= 0.5) {
+    return { tag: 'rising', label: 'Rising', class: 'window-rising' };
+  }
+  // REBUILD: young heavy, weak starters, OR weak total + young
+  if (m.youngShare > 0.55 && startersRank > N/2) {
+    return { tag: 'rebuild', label: 'Rebuilding', class: 'window-rebuild' };
+  }
+  if (totalRank > bottomThird) {
+    return { tag: 'rebuild', label: 'Rebuilding', class: 'window-rebuild' };
+  }
+  // STUCK: mid everything
+  return { tag: 'stuck', label: 'Mid / Stuck', class: 'window-stuck' };
+}
+
+function letterGrade(val, allVals) {
+  // Percentile-based grade across the league
+  const sorted = [...allVals].sort((a,b)=>b-a);
+  const rank = sorted.indexOf(val);
+  const pct = 1 - (rank / sorted.length);
+  if (pct >= 0.92) return { grade: 'A+', cls: 'grade-Aplus' };
+  if (pct >= 0.83) return { grade: 'A',  cls: 'grade-A' };
+  if (pct >= 0.75) return { grade: 'A−', cls: 'grade-Aminus' };
+  if (pct >= 0.67) return { grade: 'B+', cls: 'grade-Bplus' };
+  if (pct >= 0.50) return { grade: 'B',  cls: 'grade-B' };
+  if (pct >= 0.42) return { grade: 'B−', cls: 'grade-Bminus' };
+  if (pct >= 0.33) return { grade: 'C+', cls: 'grade-Cplus' };
+  if (pct >= 0.25) return { grade: 'C',  cls: 'grade-C' };
+  if (pct >= 0.17) return { grade: 'C−', cls: 'grade-Cminus' };
+  if (pct >= 0.08) return { grade: 'D',  cls: 'grade-D' };
+  return { grade: 'F', cls: 'grade-F' };
+}
+
+function generateTrades(teamsWithMetrics) {
+  // Find pairs with complementary needs:
+  //  - Team A (contend window) has surplus at one position, weakness at another
+  //  - Team B (rebuild) has high pick value or young player surplus
+  // Score = sum of (giver's surplus value + receiver's need score)
+  const trades = [];
+
+  for (let i = 0; i < teamsWithMetrics.length; i++) {
+    for (let j = 0; j < teamsWithMetrics.length; j++) {
+      if (i === j) continue;
+      const A = teamsWithMetrics[i];
+      const B = teamsWithMetrics[j];
+      const aWindow = A.window.tag;
+      const bWindow = B.window.tag;
+
+      // Most interesting: contend ↔ rebuild
+      if (!((aWindow === 'contend' && (bWindow === 'rebuild' || bWindow === 'rising')) ||
+            (aWindow === 'rising' && bWindow === 'contend'))) continue;
+
+      // Find A's surplus position (deepest above-replacement)
+      const positions = ['QB', 'RB', 'WR', 'TE'];
+      positions.forEach(posSurplus => {
+        const aDepth = A.metrics.playersByPos[posSurplus] || [];
+        if (aDepth.length < 3) return;
+        // Take the 3rd-deepest player (true surplus)
+        const surplusPlayer = aDepth[2];
+        if (!surplusPlayer || surplusPlayer.val < 1500) return;
+        // Bonus if this player is older (A wants picks anyway? actually contend wants to flip old pieces for win-now)
+        // Actually: contender SENDS picks/young + GETS proven win-now piece from rebuilder
+
+        // Find B's most valuable player at a position where A is weakest
+        positions.forEach(posNeed => {
+          if (posNeed === posSurplus) return;
+          const aWeakArr = A.metrics.playersByPos[posNeed] || [];
+          const aWeakStarter = aWeakArr[0]?.val || 0;
+          const leagueBestAtPos = Math.max(...teamsWithMetrics.map(t => (t.metrics.playersByPos[posNeed]||[])[0]?.val || 0));
+          if (aWeakStarter > leagueBestAtPos * 0.7) return; // not actually weak
+          const bAsset = (B.metrics.playersByPos[posNeed] || [])[0];
+          if (!bAsset || bAsset.val < 3000) return;
+
+          // A gives: surplusPlayer + (rebuild bait — pick or young player)
+          // B gives: bAsset
+          const aGiveBaseVal = surplusPlayer.val;
+          const bGiveVal = bAsset.val;
+          // Need to balance — A may need to add a pick
+          const gap = bGiveVal - aGiveBaseVal;
+          let aGives = [surplusPlayer];
+          let aGivesVal = aGiveBaseVal;
+
+          if (gap > 1000) {
+            // Add A's best pick to balance
+            const sortedPicks = [...A.picks].sort((x,y) => y.val - x.val);
+            for (const pk of sortedPicks) {
+              aGives.push(pk);
+              aGivesVal += pk.val;
+              if (aGivesVal >= bGiveVal * 0.92) break;
+            }
+          }
+
+          const finalGap = Math.abs(aGivesVal - bGiveVal);
+          const fairness = 1 - (finalGap / Math.max(aGivesVal, bGiveVal));
+          if (fairness < 0.78) return; // too lopsided
+
+          // Score: bonus for involving "my" team, bonus for fair, bonus for clear narrative
+          let score = fairness * 100;
+          if (A.isMine || B.isMine) score += 20;
+          if (aWindow === 'contend' && bWindow === 'rebuild') score += 8;
+
+          trades.push({
+            teamA: A, teamB: B,
+            aGives, bGives: [bAsset],
+            aGivesVal, bGivesVal: bGiveVal,
+            fairness,
+            score,
+            rationale: `${A.teamName} (${A.window.label}) trades depth at ${posSurplus} to acquire a difference-maker at ${posNeed}; ${B.teamName} (${B.window.label}) gets ${posSurplus} depth and future capital.`,
+            posSurplus, posNeed,
+          });
+        });
+      });
+    }
+  }
+
+  // De-duplicate similar trades (same teams, same primary players)
+  const seen = new Set();
+  const unique = [];
+  trades.sort((a,b) => b.score - a.score);
+  for (const t of trades) {
+    const key = `${t.teamA.rosterId}_${t.teamB.rosterId}_${t.aGives[0].id}_${t.bGives[0].id}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    unique.push(t);
+  }
+  return unique.slice(0, 30);
+}
+
+/* ═════════════════════════════════════════════════════════
+   RENDERING
+   ═════════════════════════════════════════════════════════ */
+
+function fmt(n) {
+  if (n == null || isNaN(n)) return '—';
+  if (n >= 1000) return (n/1000).toFixed(1) + 'k';
+  return Math.round(n).toString();
+}
+function fmtFull(n) {
+  if (n == null || isNaN(n)) return '—';
+  return Math.round(n).toLocaleString();
+}
+
+function renderHeader() {
+  document.getElementById('topbar-meta').style.display = 'flex';
+  document.getElementById('lg-name').textContent = STATE.league.name;
+  const fmtParts = [];
+  fmtParts.push(STATE.format.sf ? 'SF' : '1QB');
+  if (STATE.format.tep > 0) fmtParts.push(`TEP ${STATE.format.tep}`);
+  fmtParts.push(`${STATE.format.ppr === 1 ? 'Full' : STATE.format.ppr === 0.5 ? 'Half' : STATE.format.ppr} PPR`);
+  fmtParts.push(`${STATE.format.teams}-team`);
+  document.getElementById('lg-format').textContent = fmtParts.join(' · ');
+  const d = new Date(STATE.lastUpdated);
+  document.getElementById('lg-updated').textContent =
+    d.toLocaleDateString(undefined, { month:'short', day:'numeric' }) + ' ' +
+    d.toLocaleTimeString(undefined, { hour:'numeric', minute:'2-digit' });
+}
+
+function renderView() {
+  const c = document.getElementById('content');
+  switch (STATE.view) {
+    case 'overview':   c.innerHTML = renderOverview(); break;
+    case 'rankings':   c.innerHTML = renderRankings(); break;
+    case 'windows':    c.innerHTML = renderWindows(); break;
+    case 'strengths':  c.innerHTML = renderStrengths(); break;
+    case 'age':        c.innerHTML = renderAge(); break;
+    case 'trades':     c.innerHTML = renderTrades(); break;
+    case 'rosters':    c.innerHTML = renderRosters(); break;
+    case 'players':    c.innerHTML = renderPlayers(); break;
+  }
+  // Wire up filter chips and any post-render listeners
+  document.querySelectorAll('[data-filter]').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('[data-filter]').forEach(e => e.classList.remove('active'));
+      el.classList.add('active');
+      const f = el.getAttribute('data-filter');
+      filterPlayers(f);
+    });
+  });
+}
+
+function renderOverview() {
+  const teams = STATE.teamsWithMetrics;
+  const myTeam = teams.find(t => t.isMine);
+  const sorted = [...teams].sort((a,b) => b.metrics.totalVal - a.metrics.totalVal);
+  const myRank = myTeam ? sorted.findIndex(t => t.rosterId === myTeam.rosterId) + 1 : null;
+
+  let html = `
+    <h2 class="section-title">League <em>at a glance</em></h2>
+    <p class="section-sub">${STATE.league.name} · Season ${STATE.league.season} · ${STATE.format.teams} teams</p>
+
+    <div class="grid grid-4" style="margin-bottom: 32px;">
+      <div class="stat-card">
+        <div class="label">Top Team</div>
+        <div class="value">${sorted[0].teamName}</div>
+        <div class="sub">${fmt(sorted[0].metrics.totalVal)} total · ${sorted[0].window.label}</div>
+      </div>
+  `;
+
+  if (myTeam) {
+    html += `
+      <div class="stat-card" style="border-color: var(--accent);">
+        <div class="label">Your Team</div>
+        <div class="value">#${myRank}</div>
+        <div class="sub">${myTeam.teamName} · ${fmt(myTeam.metrics.totalVal)} · ${myTeam.window.label}</div>
+      </div>
+    `;
+  }
+
+  // Window distribution
+  const windowDist = {};
+  teams.forEach(t => { windowDist[t.window.label] = (windowDist[t.window.label]||0) + 1; });
+  const windowSummary = Object.entries(windowDist).map(([k,v]) => `${v} ${k}`).join(' · ');
+
+  html += `
+      <div class="stat-card">
+        <div class="label">League Avg Age</div>
+        <div class="value">${(teams.reduce((s,t)=>s+t.metrics.ageWeightedAvg,0)/teams.length).toFixed(1)}</div>
+        <div class="sub">value-weighted</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Window Mix</div>
+        <div class="value" style="font-size: 16px; line-height: 1.3;">${windowSummary}</div>
+        <div class="sub">league competitive structure</div>
+      </div>
+    </div>
+  `;
+
+  if (myTeam) {
+    html += renderMyTeamPanel(myTeam, teams);
+  }
+
+  // Top 5 power rankings preview
+  html += `
+    <h3 class="section-title" style="font-size: 22px; margin-top: 40px;">Power <em>top 5</em></h3>
+    <div style="margin-bottom: 32px;">
+  `;
+  sorted.slice(0, 5).forEach((t, i) => {
+    html += renderRankRow(t, i + 1);
+  });
+  html += `</div>`;
+
+  // Top 3 trades preview
+  if (STATE.trades && STATE.trades.length) {
+    const myTrades = STATE.trades.filter(t => t.teamA.isMine || t.teamB.isMine);
+    const featured = myTrades.length ? myTrades.slice(0, 3) : STATE.trades.slice(0, 3);
+    html += `<h3 class="section-title" style="font-size: 22px;">Trade <em>opportunities${myTrades.length ? ' for you' : ''}</em></h3>`;
+    featured.forEach(t => html += renderTradeCard(t));
+  }
+
+  return html;
+}
+
+function renderMyTeamPanel(myTeam, allTeams) {
+  const m = myTeam.metrics;
+  const allVals = allTeams.map(t => t.metrics.totalVal);
+  const grade = letterGrade(m.totalVal, allVals);
+  const posGrades = {};
+  ['QB','RB','WR','TE'].forEach(p => {
+    posGrades[p] = letterGrade(m.posVal[p], allTeams.map(t => t.metrics.posVal[p]));
+  });
+
+  return `
+    <div class="card mine" style="margin-bottom: 32px;">
+      <div style="display:flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px;">
+        <div>
+          <h3 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700;">${myTeam.teamName}</h3>
+          <p style="color: var(--ink-dim); font-size: 13px; margin-top: 4px;">${myTeam.ownerName} · ${myTeam.record.wins}-${myTeam.record.losses}${myTeam.record.ties ? '-'+myTeam.record.ties : ''} · <span class="window-tag ${myTeam.window.class}">${myTeam.window.label}</span></p>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 0.08em;">Overall Grade</div>
+          <div class="grade ${grade.cls}" style="font-family: 'Fraunces', serif; font-size: 48px; font-weight: 900; line-height: 1;">${grade.grade}</div>
+        </div>
+      </div>
+      <div class="strength-grid">
+        ${['QB','RB','WR','TE'].map(p => `
+          <div class="strength-cell">
+            <div class="pos">${p}</div>
+            <div class="grade ${posGrades[p].cls}">${posGrades[p].grade}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px;">
+        <div><span style="color: var(--ink-dim);">TOTAL VAL:</span> <strong>${fmtFull(m.totalVal)}</strong></div>
+        <div><span style="color: var(--ink-dim);">PLAYERS:</span> <strong>${fmtFull(m.totalPlayerVal)}</strong></div>
+        <div><span style="color: var(--ink-dim);">PICKS:</span> <strong>${fmtFull(m.totalPickVal)}</strong></div>
+        <div><span style="color: var(--ink-dim);">AVG AGE:</span> <strong>${m.ageWeightedAvg.toFixed(1)}</strong></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderRankings() {
+  const sorted = [...STATE.teamsWithMetrics].sort((a,b) => b.metrics.totalVal - a.metrics.totalVal);
+  let html = `
+    <h2 class="section-title">Power <em>rankings</em></h2>
+    <p class="section-sub">Total roster value (players + future picks). Sorted by overall capital.</p>
+    <div>
+  `;
+  sorted.forEach((t, i) => html += renderRankRow(t, i + 1));
+  return html + `</div>`;
+}
+
+function renderRankRow(t, rank) {
+  const goldClass = rank === 1 ? 'gold' : '';
+  return `
+    <div class="rank-row ${t.isMine ? 'mine' : ''}">
+      <div class="rank-num ${goldClass}">${rank}</div>
+      <div>
+        <div class="team-name">${t.teamName}</div>
+        <div class="team-owner">${t.ownerName} · ${t.record.wins}-${t.record.losses}${t.record.ties ? '-'+t.record.ties : ''}</div>
+      </div>
+      <div>
+        <span class="window-tag ${t.window.class}">${t.window.label}</span>
+      </div>
+      <div class="rank-cell">
+        <span class="label">Total Value</span>
+        <span class="value">${fmtFull(t.metrics.totalVal)}</span>
+      </div>
+      <div class="rank-cell">
+        <span class="label">Starters</span>
+        <span class="value">${fmtFull(t.metrics.startersVal)}</span>
+      </div>
+      <div class="rank-cell">
+        <span class="label">Avg Age</span>
+        <span class="value">${t.metrics.ageWeightedAvg.toFixed(1)}</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderWindows() {
+  const teams = STATE.teamsWithMetrics;
+  const groups = { contend: [], rising: [], stuck: [], rebuild: [] };
+  teams.forEach(t => groups[t.window.tag].push(t));
+  Object.values(groups).forEach(g => g.sort((a,b) => b.metrics.totalVal - a.metrics.totalVal));
+
+  let html = `
+    <h2 class="section-title">Contention <em>windows</em></h2>
+    <p class="section-sub">Where each team sits in the cycle: starters strength × age curve × asset depth.</p>
+  `;
+
+  const windowMeta = {
+    contend: { label: 'Contend Now', desc: 'Top-tier starters, win-now mode. Should be aggressive on veterans, sell rookie picks for proven help.' },
+    rising:  { label: 'Rising', desc: 'Young roster building toward a window. Should hold picks, develop, target buy-low veterans.' },
+    stuck:   { label: 'Mid / Stuck', desc: 'No clear identity — middle-of-pack assets and age. Often the worst place to be; commit to a direction.' },
+    rebuild: { label: 'Rebuilding', desc: 'Selling veterans for picks and youth. Should hoard 1sts, target post-hype talent.' },
+  };
+
+  ['contend','rising','stuck','rebuild'].forEach(tag => {
+    if (!groups[tag].length) return;
+    html += `
+      <h3 style="font-family: 'Fraunces', serif; font-size: 22px; margin-top: 28px; margin-bottom: 6px;">
+        <span class="window-tag window-${tag}" style="font-size: 11px; padding: 5px 12px; vertical-align: middle;">${windowMeta[tag].label}</span>
+        <span style="margin-left: 10px; color: var(--ink-dim); font-size: 14px; font-weight: 400;">${groups[tag].length} ${groups[tag].length === 1 ? 'team' : 'teams'}</span>
+      </h3>
+      <p class="section-sub" style="font-size: 13px; margin-bottom: 14px;">${windowMeta[tag].desc}</p>
+    `;
+    groups[tag].forEach((t,i) => {
+      const sortedAll = [...teams].sort((a,b)=>b.metrics.totalVal - a.metrics.totalVal);
+      const overallRank = sortedAll.findIndex(x => x.rosterId === t.rosterId) + 1;
+      html += renderRankRow(t, overallRank);
+    });
+  });
+
+  return html;
+}
+
+function renderStrengths() {
+  const teams = STATE.teamsWithMetrics;
+  const allPosVals = { QB: [], RB: [], WR: [], TE: [] };
+  teams.forEach(t => {
+    Object.keys(allPosVals).forEach(p => allPosVals[p].push(t.metrics.posVal[p]));
+  });
+  const maxByPos = { QB: Math.max(...allPosVals.QB)||1, RB: Math.max(...allPosVals.RB)||1, WR: Math.max(...allPosVals.WR)||1, TE: Math.max(...allPosVals.TE)||1 };
+
+  let html = `
+    <h2 class="section-title">Position <em>strengths</em></h2>
+    <p class="section-sub">Per-position roster value (top players at each spot). Grades are league-relative.</p>
+    <div class="grid grid-2">
+  `;
+  const sorted = [...teams].sort((a,b) => b.metrics.totalVal - a.metrics.totalVal);
+  sorted.forEach(t => {
+    html += `
+      <div class="card ${t.isMine ? 'mine' : ''}">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px;">
+          <div>
+            <h3 style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700;">${t.teamName}</h3>
+            <p style="color: var(--ink-dim); font-size: 12px; margin-top: 2px;">${t.ownerName} · <span class="window-tag ${t.window.class}" style="font-size: 9px; padding: 2px 8px;">${t.window.label}</span></p>
+          </div>
+        </div>
+    `;
+    ['QB','RB','WR','TE'].forEach(p => {
+      const grade = letterGrade(t.metrics.posVal[p], allPosVals[p]);
+      const fillPct = (t.metrics.posVal[p] / maxByPos[p]) * 100;
+      const fillColor = p === 'QB' ? 'var(--accent-2)' : p === 'RB' ? 'var(--good)' : p === 'WR' ? 'var(--accent-3)' : 'var(--gold)';
+      html += `
+        <div class="pos-bar-row">
+          <div class="label-cell"><span class="pos-tag pos-${p}">${p}</span></div>
+          <div class="pos-bar-bg">
+            <div class="pos-bar-fill" style="width: ${fillPct}%; background: ${fillColor};"></div>
+          </div>
+          <div class="num-cell">
+            <span class="grade ${grade.cls}" style="font-family: 'Fraunces', serif; font-weight: 800; font-size: 16px;">${grade.grade}</span>
+            <span style="color: var(--ink-faint); font-size: 11px;"> ${fmt(t.metrics.posVal[p])}</span>
+          </div>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  });
+  return html + `</div>`;
+}
+
+function renderAge() {
+  const teams = STATE.teamsWithMetrics;
+  const sorted = [...teams].sort((a,b) => a.metrics.ageWeightedAvg - b.metrics.ageWeightedAvg);
+
+  let html = `
+    <h2 class="section-title">Age <em>curves</em></h2>
+    <p class="section-sub">Value distribution by age. Youngest teams first.</p>
+    <div class="grid grid-2">
+  `;
+  sorted.forEach(t => {
+    const buckets = t.metrics.ageBuckets;
+    const ages = Object.keys(buckets).map(k => parseInt(k)).sort((a,b)=>a-b);
+    const maxBucket = Math.max(...Object.values(buckets), 1);
+    html += `
+      <div class="card ${t.isMine ? 'mine' : ''}">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+          <h3 style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700;">${t.teamName}</h3>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-dim);">
+            avg <strong style="color: var(--ink);">${t.metrics.ageWeightedAvg.toFixed(1)}</strong>
+          </div>
+        </div>
+        <div class="age-chart">
+          ${ages.map(a => {
+            const v = buckets[a];
+            const h = (v / maxBucket) * 100;
+            const cls = a < 25 ? 'young' : a < 28 ? 'prime' : a < 31 ? 'aging' : 'old';
+            return `<div class="age-bar ${cls}" style="height: ${h}%;" title="Age ${a}: ${fmt(v)}"></div>`;
+          }).join('')}
+        </div>
+        <div style="display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-faint);">
+          <span>21</span><span>25</span><span>30</span><span>35</span>
+        </div>
+        <div style="margin-top: 10px; font-family: 'JetBrains Mono', monospace; font-size: 11px; display: flex; gap: 14px; flex-wrap: wrap;">
+          <span><span style="color: var(--good);">●</span> Young: <strong>${(t.metrics.youngShare*100).toFixed(0)}%</strong></span>
+          <span><span style="color: var(--accent-2);">●</span> 30+: <strong>${(t.metrics.oldShare*100).toFixed(0)}%</strong></span>
+          <span class="window-tag ${t.window.class}" style="font-size: 9px; padding: 2px 8px;">${t.window.label}</span>
+        </div>
+      </div>
+    `;
+  });
+  return html + `</div>`;
+}
+
+function renderTrades() {
+  const trades = STATE.trades;
+  if (!trades.length) {
+    return `<h2 class="section-title">Trade <em>finder</em></h2>
+            <div class="empty-state"><h3>No clean trades surfaced</h3><p>The model couldn't find well-balanced contender↔rebuilder fits in the current roster snapshot.</p></div>`;
+  }
+
+  let html = `
+    <h2 class="section-title">Trade <em>finder</em></h2>
+    <p class="section-sub">Surfaces structurally complementary trades — contenders sending picks/depth for win-now talent. Fairness is value-symmetric (90%+ = clean swap).</p>
+
+    <div class="filter-bar">
+      <button class="filter-chip active" data-trade-filter="all">All Trades</button>
+      ${STATE.myRosterId ? '<button class="filter-chip" data-trade-filter="mine">My Trades</button>' : ''}
+      <button class="filter-chip" data-trade-filter="contend">Contender ↔ Rebuilder</button>
+    </div>
+
+    <div id="trades-list">
+  `;
+  trades.forEach(t => html += renderTradeCard(t));
+  html += `</div>`;
+
+  setTimeout(() => {
+    document.querySelectorAll('[data-trade-filter]').forEach(el => {
+      el.addEventListener('click', () => {
+        document.querySelectorAll('[data-trade-filter]').forEach(e => e.classList.remove('active'));
+        el.classList.add('active');
+        const f = el.getAttribute('data-trade-filter');
+        const list = document.getElementById('trades-list');
+        list.innerHTML = '';
+        let filtered = trades;
+        if (f === 'mine') filtered = trades.filter(t => t.teamA.isMine || t.teamB.isMine);
+        if (f === 'contend') filtered = trades.filter(t => t.teamA.window.tag === 'contend' || t.teamB.window.tag === 'contend');
+        if (!filtered.length) {
+          list.innerHTML = '<div class="empty-state"><h3>No matches</h3></div>';
+          return;
+        }
+        filtered.forEach(t => list.innerHTML += renderTradeCard(t));
+      });
+    });
+  }, 0);
+
+  return html;
+}
+
+function renderTradeCard(t) {
+  const featured = t.teamA.isMine || t.teamB.isMine;
+  const fairnessPct = Math.round(t.fairness * 100);
+  return `
+    <div class="trade-card ${featured ? 'featured' : ''}">
+      <div class="trade-header">
+        <div>
+          <span class="window-tag ${t.teamA.window.class}">${t.teamA.window.label}</span>
+          <span style="color: var(--ink-faint); margin: 0 6px;">↔</span>
+          <span class="window-tag ${t.teamB.window.class}">${t.teamB.window.label}</span>
+        </div>
+        <div class="trade-score">
+          Fairness <strong>${fairnessPct}%</strong> · Score <strong>${Math.round(t.score)}</strong>
+        </div>
+      </div>
+      <div class="trade-sides">
+        <div class="trade-side">
+          <h4 style="${t.teamA.isMine ? 'color: var(--accent);' : ''}">${t.teamA.teamName}${t.teamA.isMine ? ' (you)' : ''}</h4>
+          <div class="gives">Sends</div>
+          <div class="trade-pkg">
+            ${t.aGives.map(g => `<div>${g.position === 'PICK' ? g.label : `<span class="pos-tag pos-${g.position}" style="display:inline-block;margin-right:6px;">${g.position}</span>${g.name}`} <span style="color: var(--ink-faint); float: right;">${fmt(g.val)}</span></div>`).join('')}
+          </div>
+          <div style="text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-dim); margin-top: 4px;">Σ ${fmtFull(t.aGivesVal)}</div>
+        </div>
+        <div class="trade-arrow">⇄</div>
+        <div class="trade-side">
+          <h4 style="${t.teamB.isMine ? 'color: var(--accent);' : ''}">${t.teamB.teamName}${t.teamB.isMine ? ' (you)' : ''}</h4>
+          <div class="gives">Sends</div>
+          <div class="trade-pkg">
+            ${t.bGives.map(g => `<div>${g.position === 'PICK' ? g.label : `<span class="pos-tag pos-${g.position}" style="display:inline-block;margin-right:6px;">${g.position}</span>${g.name}`} <span style="color: var(--ink-faint); float: right;">${fmt(g.val)}</span></div>`).join('')}
+          </div>
+          <div style="text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-dim); margin-top: 4px;">Σ ${fmtFull(t.bGivesVal)}</div>
+        </div>
+      </div>
+      <div class="trade-rationale">${t.rationale}</div>
+    </div>
+  `;
+}
+
+function renderRosters() {
+  const teams = STATE.teamsWithMetrics;
+  const sorted = [...teams].sort((a,b) => (b.isMine ? 1 : 0) - (a.isMine ? 1 : 0) || b.metrics.totalVal - a.metrics.totalVal);
+
+  let html = `
+    <h2 class="section-title">All <em>rosters</em></h2>
+    <p class="section-sub">Players sorted by value. Picks shown at the bottom.</p>
+    <div class="roster-grid">
+  `;
+  sorted.forEach(t => {
+    html += `
+      <div class="card roster-card ${t.isMine ? 'mine' : ''}">
+        <div class="roster-head">
+          <div>
+            <h3>${t.teamName}</h3>
+            <div class="roster-meta">${t.ownerName} · <span class="window-tag ${t.window.class}" style="font-size: 9px; padding: 2px 7px;">${t.window.label}</span></div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-faint); text-transform: uppercase;">Total</div>
+            <div style="font-family: 'Fraunces', serif; font-size: 22px; font-weight: 800;">${fmt(t.metrics.totalVal)}</div>
+          </div>
+        </div>
+        ${t.players.map(p => `
+          <div class="player-row">
+            <span class="pos-tag pos-${p.position}">${p.position}</span>
+            <div>
+              <div class="player-name">${p.name}</div>
+              <div class="player-team">${p.team || 'FA'}${p.injuryStatus ? ' · ' + p.injuryStatus : ''}</div>
+            </div>
+            <div class="player-age">${p.age || '—'}</div>
+            <div class="player-val">${fmt(p.val)}</div>
+            <div class="player-val" style="color: ${p.trend > 0 ? 'var(--good)' : p.trend < 0 ? 'var(--bad)' : 'var(--ink-faint)'};">${p.trend ? (p.trend > 0 ? '+' : '') + p.trend : '—'}</div>
+          </div>
+        `).join('')}
+        ${t.picks.length ? `<div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px;">Draft Picks</div>
+          ${t.picks.map(p => `
+            <div class="player-row">
+              <span class="pos-tag pos-PICK">PCK</span>
+              <div><div class="player-name" style="font-size: 12px;">${p.label}</div></div>
+              <div class="player-age">—</div>
+              <div class="player-val">${fmt(p.val)}</div>
+              <div></div>
+            </div>
+          `).join('')}
+        </div>` : ''}
+      </div>
+    `;
+  });
+  return html + `</div>`;
+}
+
+function renderPlayers() {
+  // Players DB sortable view — across whole league, grouped by position
+  const allPlayers = [];
+  STATE.teamsWithMetrics.forEach(t => {
+    t.players.forEach(p => allPlayers.push({ ...p, owner: t.teamName, ownerIsMine: t.isMine }));
+  });
+  // Free agents: anyone in player DB w/ position QB/RB/WR/TE that isn't on a roster, with value
+  const ownedIds = new Set(allPlayers.map(p => p.id));
+  const fas = [];
+  STATE.values.forEach((v, sid) => {
+    if (ownedIds.has(sid)) return;
+    if (!['QB','RB','WR','TE'].includes(v.position)) return;
+    if (!v.val || v.val < 500) return;
+    fas.push({
+      id: sid,
+      name: v.name,
+      position: v.position,
+      team: v.team,
+      age: v.age,
+      val: v.val,
+      trend: v.trend || 0,
+      owner: 'FA',
+      ownerIsMine: false,
+    });
+  });
+  const all = [...allPlayers, ...fas].sort((a,b) => b.val - a.val);
+
+  let html = `
+    <h2 class="section-title">Player <em>database</em></h2>
+    <p class="section-sub">Every rostered player + top free agents, ranked by value.</p>
+
+    <div class="filter-bar">
+      <button class="filter-chip active" data-filter="all">All</button>
+      <button class="filter-chip" data-filter="QB">QB</button>
+      <button class="filter-chip" data-filter="RB">RB</button>
+      <button class="filter-chip" data-filter="WR">WR</button>
+      <button class="filter-chip" data-filter="TE">TE</button>
+      <button class="filter-chip" data-filter="FA">Free Agents</button>
+      ${STATE.myRosterId ? '<button class="filter-chip" data-filter="mine">My Players</button>' : ''}
+    </div>
+
+    <div class="card" id="player-table" style="padding: 0; overflow: hidden;">
+      <div style="display: grid; grid-template-columns: 50px 50px 1fr 80px 60px 80px 80px 1fr; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line); background: var(--bg-elev); font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-dim); font-weight: 700;">
+        <div>#</div><div>Pos</div><div>Player</div><div>Team</div><div>Age</div><div style="text-align:right;">Value</div><div style="text-align:right;">Δ30d</div><div>Owner</div>
+      </div>
+      <div id="player-rows">
+        ${all.slice(0, 200).map((p, i) => playerRowHTML(p, i + 1)).join('')}
+      </div>
+    </div>
+  `;
+
+  // Stash the data for filters
+  setTimeout(() => {
+    window._allPlayers = all;
+    window._renderPlayerRows = playerRowHTML;
+  }, 0);
+
+  return html;
+}
+
+function playerRowHTML(p, idx) {
+  const trendColor = p.trend > 0 ? 'var(--good)' : p.trend < 0 ? 'var(--bad)' : 'var(--ink-faint)';
+  return `
+    <div class="player-data-row" data-pos="${p.position}" data-fa="${p.owner === 'FA' ? '1' : '0'}" data-mine="${p.ownerIsMine ? '1' : '0'}" style="display: grid; grid-template-columns: 50px 50px 1fr 80px 60px 80px 80px 1fr; gap: 12px; padding: 10px 18px; border-bottom: 1px solid var(--line); align-items: center; ${p.ownerIsMine ? 'background: rgba(212,255,58,0.04);' : ''}">
+      <div style="font-family: 'JetBrains Mono', monospace; color: var(--ink-faint); font-size: 12px;">${idx}</div>
+      <div><span class="pos-tag pos-${p.position}">${p.position}</span></div>
+      <div style="font-weight: 500; font-size: 14px;">${p.name}</div>
+      <div class="player-team">${p.team || 'FA'}</div>
+      <div class="player-age">${p.age || '—'}</div>
+      <div class="player-val">${fmt(p.val)}</div>
+      <div class="player-val" style="color: ${trendColor};">${p.trend ? (p.trend > 0 ? '+' : '') + p.trend : '—'}</div>
+      <div style="font-size: 12px; color: ${p.ownerIsMine ? 'var(--accent)' : 'var(--ink-dim)'};">${p.owner}${p.ownerIsMine ? ' (you)' : ''}</div>
+    </div>
+  `;
+}
+
+function filterPlayers(f) {
+  const all = window._allPlayers || [];
+  let filtered;
+  if (f === 'all') filtered = all;
+  else if (f === 'FA') filtered = all.filter(p => p.owner === 'FA');
+  else if (f === 'mine') filtered = all.filter(p => p.ownerIsMine);
+  else filtered = all.filter(p => p.position === f);
+  document.getElementById('player-rows').innerHTML = filtered.slice(0, 200).map((p, i) => playerRowHTML(p, i+1)).join('');
+}
+
+/* ═════════════════════════════════════════════════════════
+   ORCHESTRATION
+   ═════════════════════════════════════════════════════════ */
+
+async function loadAndRender(showLoadingState = true) {
+  const c = document.getElementById('content');
+  document.getElementById('main-app').style.display = 'block';
+  document.getElementById('setup-screen').style.display = 'none';
+
+  if (showLoadingState) {
+    c.innerHTML = `<div class="loader"><div class="loader-text">Pulling league data…</div><div class="loader-bar"></div></div>`;
+  }
+
+  try {
+    const refreshBtn = document.getElementById('refresh-btn');
+    if (refreshBtn) refreshBtn.disabled = true;
+
+    // 1. League core
+    setLoaderText('Fetching league info…');
+    const { league, rosters, users, tradedPicks, drafts } = await fetchSleeperLeague(STATE.leagueId);
+    STATE.league = league;
+    STATE.rosters = rosters;
+    STATE.users = users;
+    STATE.tradedPicks = tradedPicks;
+    STATE.drafts = drafts;
+    STATE.completedDraftSeasons = completedDraftSeasons(drafts);
+    STATE.format = detectFormat(league);
+
+    // 2. Player DB
+    setLoaderText('Loading NFL player database (~5MB, cached)…');
+    STATE.players = await fetchPlayerDB();
+
+    // 3. Values
+    setLoaderText('Pulling FantasyCalc dynasty values…');
+    const fc = await fetchFantasyCalcValues(STATE.format);
+    let ktc = null;
+    if (STATE.source !== 'fc') {
+      setLoaderText('Pulling KeepTradeCut values…');
+      ktc = await fetchKTCValues(STATE.format);
+    }
+    STATE.values = buildValueMap(fc, ktc, STATE.source);
+
+    // 4. Assemble teams
+    setLoaderText('Assembling rosters & valuing picks…');
+    const teams = assembleTeams();
+    const teamsWithMetrics = computeTeamMetrics(teams);
+    teamsWithMetrics.forEach(t => t.window = classifyWindow(t, teamsWithMetrics));
+    STATE.teamsWithMetrics = teamsWithMetrics;
+
+    // 5. Trade engine
+    setLoaderText('Running trade engine…');
+    STATE.trades = generateTrades(teamsWithMetrics);
+
+    STATE.lastUpdated = new Date().toISOString();
+    saveState();
+
+    renderHeader();
+    renderView();
+
+    if (refreshBtn) refreshBtn.disabled = false;
+  } catch (e) {
+    console.error(e);
+    c.innerHTML = `
+      <div class="error-box">
+        <strong>Couldn't load the league.</strong><br>
+        ${e.message || e}<br><br>
+        Check your league ID, your network connection, or try refreshing. If KTC is the failure point, switch to "FantasyCalc only" in settings — KTC sometimes blocks browser requests.
+      </div>
+      <button class="primary-btn" onclick="openSettings()" style="max-width: 240px;">Open Settings</button>
+    `;
+    const refreshBtn = document.getElementById('refresh-btn');
+    if (refreshBtn) refreshBtn.disabled = false;
+  }
+}
+
+function setLoaderText(t) {
+  const el = document.querySelector('.loader-text');
+  if (el) el.textContent = t;
+}
+
+/* Tab switching */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    STATE.view = tab.getAttribute('data-view');
+    renderView();
+  });
+});
+
+/* Setup */
+function initialLoad() {
+  const id = document.getElementById('setup-league-id').value.trim();
+  if (!id) {
+    alert('Enter a Sleeper league ID');
+    return;
+  }
+  STATE.leagueId = id;
+  STATE.username = document.getElementById('setup-username').value.trim() || null;
+  STATE.source = document.getElementById('setup-source').value;
+  document.getElementById('setup-go').disabled = true;
+  loadAndRender();
+}
+
+function hardRefresh() { loadAndRender(); }
+
+/* Settings */
+function openSettings() {
+  document.getElementById('settings-league-id').value = STATE.leagueId || '';
+  document.getElementById('settings-username').value = STATE.username || '';
+  document.getElementById('settings-source').value = STATE.source || 'blend';
+  document.getElementById('settings-modal').classList.add('active');
+}
+function closeSettings() { document.getElementById('settings-modal').classList.remove('active'); }
+function openValueInfo() { document.getElementById('value-modal').classList.add('active'); }
+function closeValueInfo() { document.getElementById('value-modal').classList.remove('active'); }
+
+// Click outside modal content to close
+document.querySelectorAll('.modal-bg').forEach(bg => {
+  bg.addEventListener('click', e => {
+    if (e.target === bg) bg.classList.remove('active');
+  });
+});
+function saveSettings() {
+  STATE.leagueId = document.getElementById('settings-league-id').value.trim();
+  STATE.username = document.getElementById('settings-username').value.trim() || null;
+  STATE.source = document.getElementById('settings-source').value;
+  saveState();
+  closeSettings();
+  loadAndRender();
+}
+function resetAll() {
+  if (!confirm('Clear saved league ID and start over?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem('dynastyCmd_playerDB_v1');
+  location.reload();
+}
+
+/* Boot */
+(function boot() {
+  const saved = loadState();
+  if (saved && saved.leagueId) {
+    STATE.leagueId = saved.leagueId;
+    STATE.username = saved.username;
+    STATE.source = saved.source || 'blend';
+    loadAndRender();
+  } else {
+    // Show setup screen
+    document.getElementById('main-app').style.display = 'none';
+    document.getElementById('setup-screen').style.display = 'flex';
+  }
+})();
+</script>
+
+</body>
+</html>
